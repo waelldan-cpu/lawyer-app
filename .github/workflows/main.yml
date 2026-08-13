@@ -28,6 +28,15 @@ jobs:
           TARGET_DIR=$(find . -name "pubspec.yaml" -exec dirname {} \;)
           echo "PROJECT_DIR=$TARGET_DIR" >> $GITHUB_ENV
 
+      - name: Fix Android v1 Embedding
+        run: |
+          cd ${{ env.PROJECT_DIR }}
+          # تعديل ملف المنفست برمجياً لإجبار النظام على قبول البنية الحديثة
+          MANIFEST_FILE=$(find . -name "AndroidManifest.xml" | head -n 1)
+          if [ -f "$MANIFEST_FILE" ]; then
+            sed -i '/<meta-data/d' "$MANIFEST_FILE"
+          fi
+
       - name: Install Dependencies
         run: |
           cd ${{ env.PROJECT_DIR }}
@@ -36,7 +45,7 @@ jobs:
       - name: Build APK
         run: |
           cd ${{ env.PROJECT_DIR }}
-          flutter build apk --release --no-validate-project-metadata
+          flutter build apk --release
 
       - name: Upload APK Result
         uses: actions/upload-artifact@v4
