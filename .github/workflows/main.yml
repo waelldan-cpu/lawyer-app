@@ -36,7 +36,6 @@ jobs:
       - name: Build APK
         run: |
           cd ${{ env.PROJECT_DIR }}
-          # استخدام علم التجاوز للبنية القديمة لتجنب فشل البناء
           flutter build apk --release --no-validate-project-metadata
 
       - name: Upload APK Result
