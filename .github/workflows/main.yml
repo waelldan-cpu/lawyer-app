@@ -25,17 +25,23 @@ jobs:
       - name: Extract Project Files
         run: |
           unzip -o Lawyer_App_V2_Flu*.zip
-          
+          TARGET_DIR=$(find . -name "pubspec.yaml" -exec dirname {} \;)
+          echo "PROJECT_DIR=$TARGET_DIR" >> $GITHUB_ENV
+
       - name: Install Dependencies
         run: |
+          cd ${{ env.PROJECT_DIR }}
           flutter pub get
 
       - name: Build APK
         run: |
+          cd ${{ env.PROJECT_DIR }}
           flutter build apk --release
 
       - name: Upload APK Result
         uses: actions/upload-artifact@v4
         with:
           name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: |
+            **/build/app/outputs/flutter-apk/app-release.apk
+            **/build/app/outputs/apk/release/app-release.apk
